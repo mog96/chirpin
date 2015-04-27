@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // go to timeline
             println("CURRENT USER DETECTED; \(User.currentUser?.name)")
             
-            var vc = storyboard.instantiateViewControllerWithIdentifier("TweetsViewController") as! UIViewController
+            var vc = storyboard.instantiateViewControllerWithIdentifier("HomeNavigationController") as! UIViewController
             window?.rootViewController = vc // all the arrow in storyboard does; 100% parity
         }
         

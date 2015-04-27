@@ -1,25 +1,19 @@
 //
-//  TweetsViewController.swift
+//  ComposeViewController.swift
 //  chirpin
 //
-//  Created by Mateo Garcia on 4/25/15.
+//  Created by Mateo Garcia on 4/27/15.
 //  Copyright (c) 2015 Mateo Garcia. All rights reserved.
 //
 
 import UIKit
 
-class TweetsViewController: UIViewController {
-    
-    var tweets: [Tweet]?
+class ComposeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        TwitterClient.sharedInstance.homeTimelineWithParams(nil, completion: { (tweets, error) -> () in
-            self.tweets = tweets
-        })
     }
 
     override func didReceiveMemoryWarning() {
@@ -27,9 +21,6 @@ class TweetsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func onLogout(sender: AnyObject) {
-        User.currentUser?.logout()
-    }
 
     /*
     // MARK: - Navigation
