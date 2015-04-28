@@ -17,30 +17,37 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     var loginCompletion: ((user: User?, error: NSError?) -> ())?
     
     class var sharedInstance: TwitterClient {
-    struct Static {
-        static let instance = TwitterClient(baseURL: twitterBaseURL, consumerKey: twitterConsumerKey, consumerSecret: twitterConsumerSecret)
+        struct Static {
+            static let instance = TwitterClient(baseURL: twitterBaseURL, consumerKey: twitterConsumerKey, consumerSecret: twitterConsumerSecret)
         }
     
         return Static.instance
     }
     
     func homeTimelineWithParams(params: NSDictionary?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
+        
         // HOME TIMELINE
         
         TwitterClient.sharedInstance.GET("1.1/statuses/home_timeline.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             
-            println("home timeline: \(response)")
+            // println("home timeline: \(response)")
+            
             var tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
-            
-            // for tweet in tweets {
-            //     println("text: \(tweet.text), created at: \(tweet.createdAt)")
-            // }
-            
             completion(tweets: tweets, error: nil)
             
         }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
-            println("ERROR GETTING HOME T-LINE")
+            println("ERROR GETTING HOME TIMELINE")
             completion(tweets: nil, error: error)
+        })
+    }
+    
+    func composeTweet(params: NSDictionary?, completion: (tweet: Tweet?, error: NSError?) -> ()) {
+        TwitterClient.sharedInstance.POST("1.1/statuses/update.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var tweet = Tweet(dictionary: response as! NSDictionary)
+            completion(tweet: tweet, error: nil)
+        }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+            println("ERROR POSTING TWEET")
+            completion(tweet: nil, error: error)
         })
     }
     
@@ -57,6 +64,21 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         }) { (error: NSError!) -> Void in
             println("FAILED REQUEST T0KEN")
             self.loginCompletion?(user: nil, error: error)
+        }
+    }
+    
+    func retweet(tweetID: Int?, completion: (status: Tweet?, error: NSError?) -> ()) {
+        var retweetUrlString = "1.1/statuses/retweet/\(tweetID!).json"
+        println(retweetUrlString)
+        self.POST(retweetUrlString, parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var tweet = Tweet(dictionary: response as! NSDictionary)
+            
+            println("U DONE")
+            
+            completion(status: tweet, error: nil)
+        }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+            println("ERROR RETWEETING")
+            completion(status: nil, error: error)
         }
     }
     

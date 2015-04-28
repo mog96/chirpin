@@ -19,6 +19,7 @@ class User: NSObject {
     var screenname: String?
     var profileImageUrl: String?
     var tagline: String?
+    
     var dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {
