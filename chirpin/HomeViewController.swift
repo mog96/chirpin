@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TweetCellDelegate { // , TweetViewControllerDelegate {
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TweetCellDelegate {
     
     var tweets: [Tweet]?
     var refreshControl: UIRefreshControl!
@@ -16,15 +16,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var replyScreenname = ""
     
     @IBOutlet weak var tableView: UITableView!
-    
-    // var dismissProgressHUD = false
-    
-//    override func viewWillAppear(animated: Bool) {
-//        println("FART")
-//        if !dismissProgressHUD {
-//            SVProgressHUD.show()
-//        }
-//    }
+    @IBOutlet var swipeGestureRecognizer: UISwipeGestureRecognizer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +100,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
     }
+    
     
     // MARK: Protocol implementations
     

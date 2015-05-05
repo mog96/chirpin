@@ -20,6 +20,9 @@ class User: NSObject {
     var profileImageUrl: String?
     var tagline: String?
     
+    var followingCount: Int!
+    var followersCount: Int!
+    
     var dictionary: NSDictionary
     
     init(dictionary: NSDictionary) {
