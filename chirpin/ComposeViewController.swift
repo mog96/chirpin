@@ -19,7 +19,7 @@ class ComposeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        profileImageView.setImageWithURL(NSURL(string: "http://pbs.twimg.com/profile_images/500680582515675138/wLuHYhOu_normal.jpeg")!)
+        profileImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImageUrl!)!)
 
         if (replyScreenname != "") {
             tweetField.text = "@" + replyScreenname + " "

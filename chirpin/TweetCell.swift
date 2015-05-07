@@ -10,6 +10,7 @@ import UIKit
 
 protocol TweetCellDelegate {
     func composeReply(cell: TweetCell)
+    func openProfile(cell: TweetCell)
 }
 
 class TweetCell: UITableViewCell {
@@ -55,6 +56,11 @@ class TweetCell: UITableViewCell {
     
     @IBAction func onFavorite(sender: AnyObject) {
         self.favoriteButton.setBackgroundImage(UIImage(named: "favorite_on.png"), forState: UIControlState.Normal)
+    }
+    
+    @IBAction func onProfileImageTapped(sender: AnyObject) {
+        println("booboo")
+        delegate?.openProfile(self)
     }
     
     // MARK: Setup
