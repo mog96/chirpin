@@ -17,6 +17,8 @@ class ProfileCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        setUpCell()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -28,8 +30,10 @@ class ProfileCell: UITableViewCell {
     
     // MARK: Setup
     
-    func setUpCell(tweet: Tweet) {
-        self.profileImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImageUrl!)!)
+    func setUpCell() {
+        // println(User.currentUser!.profileImageUrl!)
+        profileImageView.setImageWithURL(NSURL(string: "http://pbs.twimg.com/profile_images/500680582515675138/wLuHYhOu_bigger.jpeg")!)
+        // self.profileImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImageUrl!)!)
         self.nameLabel.text = User.currentUser!.name
         self.screennameLabel.text = "@" + User.currentUser!.screenname!
     }

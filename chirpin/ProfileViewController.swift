@@ -10,14 +10,36 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    var user: User!
+    
+    @IBOutlet weak var profileBannerImageView: UIImageView!
     @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var tweetCount: UILabel!
-    @IBOutlet weak var followerCount: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var screennameLabel: UILabel!
+    @IBOutlet weak var taglineLabel: UILabel!
+    @IBOutlet weak var tweetCountLabel: UILabel!
+    @IBOutlet weak var followingCountLabel: UILabel!
+    @IBOutlet weak var followerCountLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        println(user.bannerImageUrl)
 
-        // Do any additional setup after loading the view.
+        if let bannerImageUrl = user.bannerImageUrl {
+            profileBannerImageView.setImageWithURL(NSURL(string: user.bannerImageUrl!)!)
+        }
+        
+        profileImageView.setImageWithURL(NSURL(string: user.profileImageUrl!)!)
+        profileImageView.layer.cornerRadius = 3
+        profileImageView.clipsToBounds = true
+        
+        nameLabel.text = user.name!
+        screennameLabel.text = "@" + user.screenname!
+        taglineLabel.text = user.tagline
+        tweetCountLabel.text = "\(user.tweetCount!)"
+        followingCountLabel.text = "\(user.followingCount!)"
+        followerCountLabel.text = "\(user.followersCount!)"
     }
 
     override func didReceiveMemoryWarning() {

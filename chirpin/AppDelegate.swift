@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var storyboard = UIStoryboard(name: "Main", bundle: nil)
+    var hamburgerViewController: HamburgerViewController?
     
     
 
@@ -26,17 +27,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // IF USER IS LOGGED IN
         if User.currentUser != nil {
             
-            
             // go to timeline
-            println("CURRENT USER DETECTED: \(User.currentUser?.name!)")
-            
+            println("CURRENT USER DETECTED: \(User.currentUser!.name!)")
             
             // ** SETS START VIEW **
-            var vc = storyboard.instantiateViewControllerWithIdentifier("ContainerViewController") as! UIViewController
+            hamburgerViewController = storyboard.instantiateViewControllerWithIdentifier("HamburgerViewController") as? HamburgerViewController
             
+            var menuViewController = storyboard.instantiateViewControllerWithIdentifier("MenuViewController") as! MenuViewController
+            var homeNavigationController = storyboard.instantiateViewControllerWithIdentifier("HomeNavigationController") as! UINavigationController
+            
+            hamburgerViewController!.menuViewController = menuViewController
+            menuViewController.hamburgerViewController = hamburgerViewController
+            
+            var homeViewController = homeNavigationController.viewControllers[0] as! HomeViewController
+            homeViewController.showHomeTimeline = true
+            hamburgerViewController!.contentViewController = homeNavigationController
             
             // does exactly the same as arrow in storyboard   ("100% parity" --Tim Lee)
-            window?.rootViewController = vc
+            window?.rootViewController = hamburgerViewController
         }
         
         return true

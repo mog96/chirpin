@@ -15,6 +15,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var replyId = 0
     var replyScreenname = ""
     
+    var userTapped: User!
+    
+    var showHomeTimeline: Bool!
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var swipeGestureRecognizer: UISwipeGestureRecognizer!
 
@@ -22,19 +26,27 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        refreshControl = UIRefreshControl()
         
-        refreshData()
+        if showHomeTimeline! {
+            // navBarTitle = "Home"
+            refreshHomeTimelineData()
+            refreshControl.addTarget(self, action: "onRefreshHomeTimeline", forControlEvents: UIControlEvents.ValueChanged)
+        } else {
+            // navBarTitle.description = "Mentions"
+            refreshMentionsData()
+            refreshControl.addTarget(self, action: "onRefreshMentions", forControlEvents: UIControlEvents.ValueChanged)
+        }
+        
+        tableView.insertSubview(refreshControl, atIndex: 0)
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.estimatedRowHeight = 44.0
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
+        // Sets battery/time to white instead of black
         self.navigationController!.navigationBar.barStyle = UIBarStyle.Black;
-        
-        refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
-        tableView.insertSubview(refreshControl, atIndex: 0)
     }
     
     override func didReceiveMemoryWarning() {
@@ -82,7 +94,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Refresh
     
-    func refreshData() {
+    func refreshHomeTimelineData() {
         TwitterClient.sharedInstance.homeTimelineWithParams(nil, completion: { (tweets, error) -> () in
             self.tweets = tweets
             self.tableView.reloadData()
@@ -90,8 +102,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         })
     }
     
-    func onRefresh() {
-        refreshData()
+    func refreshMentionsData() {
+        TwitterClient.sharedInstance.mentionsWithParams(nil, completion: { (tweets, error) -> () in
+            self.tweets = tweets
+            self.tableView.reloadData()
+            // SVProgressHUD.dismiss()
+        })
+    }
+    
+    func onRefreshHomeTimeline() {
+        refreshHomeTimelineData()
+        refreshControl.endRefreshing()
+    }
+    
+    func onRefreshMentions() {
+        refreshMentionsData()
         refreshControl.endRefreshing()
     }
     
@@ -101,13 +126,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         User.currentUser?.logout()
     }
     
-    
     // MARK: Protocol implementations
     
     func composeReply(cell: TweetCell) {
         replyId = cell.tweet!.id!
         replyScreenname = cell.tweet!.user!.screenname!
         performSegueWithIdentifier("composeSegue", sender: nil)
+    }
+    
+    func openProfile(cell: TweetCell) {
+        userTapped = cell.tweet!.user!
+        performSegueWithIdentifier("profileSegue", sender: nil)
     }
     
 //    func tweetViewController(tweetViewController: TweetViewController, dismissProgressHUD: Bool) {
@@ -124,6 +153,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             var vc = nc.viewControllers[0] as! ComposeViewController
             vc.replyId = replyId
             vc.replyScreenname = replyScreenname
+        } else if segue.identifier == "profileSegue" {
+            var vc = segue.destinationViewController as! ProfileViewController
+            vc.user = userTapped
         } else {
             var cell = sender as! UITableViewCell
             var indexPath = tableView.indexPathForCell(cell)!
